@@ -12,7 +12,7 @@ This repository documents the end-to-end pipeline: from data wrangling to cluste
 
 I worked with two major datasets:
 
-- **Human captions**: Crowdsourced submissions and New Yorker contest winners  
+- **Human captions**: Crowdsourced submissions and New Yorker contest winners at from [here](https://nextml.github.io/caption-contest-data/) 
 - **AI captions**: Generated using ChatGPT and Claude APIs with standardized prompts  
 
 Each entry includes:
