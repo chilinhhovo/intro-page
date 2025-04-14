@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The New Yorker Caption Contest: Human vs. AI</title>
   
+  <!-- Add Three.js and GLTFLoader -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  
   <style>
     /* Base styles */
     * {
@@ -140,7 +144,7 @@
     
     .quiz input[type="radio"]:checked + span {
       font-weight: bold;
-      color: #f05349;
+      color: #0000FF;
     }
     
     .feedback {
@@ -187,7 +191,7 @@
     }
     
     a {
-      color: #f05349;
+      color: #0000FF;
       text-decoration: none;
     }
     
@@ -230,7 +234,7 @@
   </style>
 </head>
 <body>
-  <canvas id="dotCanvas" width="1600" height="900"></canvas>
+  <canvas id="threeCanvas"></canvas>
   
   <div class="scroll-container">
     <section class="active" id="section1">
@@ -293,66 +297,82 @@
   </div>
 
   <script>
-    // Canvas dots animation
-    document.addEventListener('DOMContentLoaded', function() {
-      const canvas = document.getElementById('dotCanvas');
-      const ctx = canvas.getContext('2d');
-      
-      // Set canvas size to window size
-      function resizeCanvas() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-      }
-      
-      window.addEventListener('resize', resizeCanvas);
-      resizeCanvas();
-      
-      // Dot parameters
-      const dots = [];
-      const numDots = 100;
-      const maxRadius = 5;
-      const minRadius = 1;
-      const maxSpeed = 0.5;
-      
-      // Create dots
-      for (let i = 0; i < numDots; i++) {
-        dots.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          radius: Math.random() * (maxRadius - minRadius) + minRadius,
-          speedX: (Math.random() - 0.5) * maxSpeed,
-          speedY: (Math.random() - 0.5) * maxSpeed,
-          opacity: Math.random() * 0.5 + 0.1
-        });
-      }
-      
-      function animate() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Three.js scene setup
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('threeCanvas'), alpha: true });
+    
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x000000, 0);
+    
+    // Add lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    scene.add(ambientLight);
+    
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+    directionalLight.position.set(0, 1, 1);
+    scene.add(directionalLight);
+    
+    camera.position.z = 5;
+    
+    // Load the GLTF model
+    const loader = new THREE.GLTFLoader();
+    const models = [];
+    
+    loader.load('Asset 2.gltf', function(gltf) {
+      // Create multiple instances
+      for(let i = 0; i < 20; i++) {
+        const model = gltf.scene.clone();
         
-        // Draw dots
-        dots.forEach(dot => {
-          // Update position
-          dot.x += dot.speedX;
-          dot.y += dot.speedY;
-          
-          // Wrap around edges
-          if (dot.x < 0) dot.x = canvas.width;
-          if (dot.x > canvas.width) dot.x = 0;
-          if (dot.y < 0) dot.y = canvas.height;
-          if (dot.y > canvas.height) dot.y = 0;
-          
-          // Draw dot
-          ctx.beginPath();
-          ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(240, 83, 73, ${dot.opacity})`;
-          ctx.fill();
-        });
+        // Random scale between 0.1 and 0.3
+        const scale = 0.1 + Math.random() * 0.2;
+        model.scale.set(scale, scale, scale);
         
-        requestAnimationFrame(animate);
+        // Random position
+        model.position.set(
+          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 10,
+          (Math.random() - 0.5) * 10
+        );
+        
+        // Store initial position for animation
+        model.userData.initialY = model.position.y;
+        model.userData.speed = 0.001 + Math.random() * 0.002;
+        model.userData.rotationSpeed = 0.005 + Math.random() * 0.01;
+        
+        scene.add(model);
+        models.push(model);
       }
-      
-      animate();
+    }, undefined, function(error) {
+      console.error('Error loading model:', error);
     });
+    
+    // Animation loop
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      // Animate each model
+      models.forEach(model => {
+        // Floating motion
+        model.position.y = model.userData.initialY + Math.sin(Date.now() * model.userData.speed) * 0.5;
+        
+        // Gentle rotation
+        model.rotation.y += model.userData.rotationSpeed;
+      });
+      
+      renderer.render(scene, camera);
+    }
+    
+    // Handle window resize
+    window.addEventListener('resize', onWindowResize, false);
+    
+    function onWindowResize() {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    }
+    
+    animate();
 
     const sections = document.querySelectorAll("section");
     let currentSection = 0;
@@ -370,10 +390,8 @@
     
     function handleNextClick() {
       if (currentSection === sections.length - 1) {
-        // If on the last section, go to the external URL
         window.location.href = "https://chilinhhovo.github.io/567_contest";
       } else {
-        // Otherwise, navigate to the next section
         navigate(1);
       }
     }
