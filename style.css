@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Yorker Caption Contest Quiz</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .quiz-container {
+      background: #fffaf5;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      max-width: 700px;
+      margin: 2rem auto;
+    }
+    .quiz-container h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: #1d1d1f;
+    }
+    .quiz-option {
+      background-color: #f6f6f6;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+    .quiz-option:hover {
+      background-color: #eaeaea;
+    }
+    .quiz-option.selected {
+      border: 2px solid #ff5c35;
+      background-color: #fff0e6;
+    }
+    .feedback {
+      display: none;
+      margin-top: 1.5rem;
+      background-color: #e0f7ec;
+      padding: 1rem;
+      border-radius: 6px;
+      border-left: 4px solid #00b38f;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container">
+    <h2>Which caption do you think is the funniest?</h2>
+    <div class="quiz-option" onclick="selectOption(1, 'This caption was Top choice by voters and written by a human. It has 15232 funny votes out of 25200 votes. Good choice!')">
+      1. Lunch is on me.
+    </div>
+    <div class="quiz-option" onclick="selectOption(2, 'This caption was in the Top 3 funniest caption by voters and written by a human. It has 8565 funny votes out of 19463 votes. Good choice!')">
+      2. Dinner's on ME.
+    </div>
+    <div class="quiz-option" onclick="selectOption(3, 'This caption was the best attempt by ChatGPT, an AI model by OpenAI. Good choice!')">
+      3. Frankly, I'm more impressed by his balance than worried about lunch.
+    </div>
+    <div class="quiz-option" onclick="selectOption(4, 'This caption was the best attempt by Claude, an AI model by Anthropic. Good choice!')">
+      4. Hey, who said there weren't plenty of fish in the sea?
+    </div>
+    <div class="quiz-option" onclick="selectOption(5, 'This caption was in the Top 3 funniest caption by voters and written by a human. It has 7735 funny votes out of 19271 votes. Good choice!')">
+      5. He’s telling his friends it’s not deep. So be patient.
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+  </div>
+
+  <script>
+    function selectOption(optionNumber, message) {
+      const options = document.querySelectorAll('.quiz-option');
+      options.forEach(opt => opt.classList.remove('selected'));
+      options[optionNumber - 1].classList.add('selected');
+      const feedback = document.getElementById('feedback');
+      feedback.innerText = message;
+      feedback.style.display = 'block';
+    }
+  </script>
+
+</body>
+</html>

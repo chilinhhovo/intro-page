@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+
+  <title>The New Yorker Caption Contest: Human vs. AI</title>
+  <style>
+    body {
+      font-family: Helvetica-neue, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f9f9f9;
+      color: #222;
+      overflow-x: hidden;
+    }
+    h1, h2, h3 {
+      font-family: Helvetica, sans-serif;
+    }
+    section {
+      display: none;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    section.active {
+      display: block;
+    }
+    .quiz label {
+      display: block;
+      margin: 0.5rem 0;
+      cursor: pointer;
+    }
+    .cartoon-img {
+      max-width: 100%;
+      border: 1px solid #ccc;
+      margin-top: 1rem;
+    }
+    .feedback {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #e6ffee;
+      border: 1px solid #00aa88;
+      border-radius: 8px;
+      display: none;
+    }
+    .nav-buttons {
+      text-align: center;
+      margin: 2rem;
+    }
+    .nav-buttons button {
+      padding: 0.75rem 1.5rem;
+      margin: 0 0.5rem;
+      font-size: 1rem;
+      border: none;
+      background: #0077cc;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .nav-buttons button:hover {
+      background: #005fa3;
+    }
+    .part-intro {
+      font-size: 1.0rem;
+      font-weight: bold;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+  <section class="active" id="section1">
+    <h1>The New Yorker Caption Contest</h1>
+    <p>The New Yorker Caption Contest is a long-running tradition. Each week, a cartoon is presented and readers submit their funniest captions. It's a battle of wits, and the winner gets their caption published in the magazine.</p>
+    <img class="cartoon-img" src="/Users/chivo/Downloads/data_studio/project4/cartoon_story/images/665_Dashboard.jpg" alt="New Yorker Cartoon Contest 665">
+
+    <div class="quiz">
+      <h2>Quiz: Which caption do you think is the funniest?</h2>
+      <form id="captionQuiz">
+        <label><input type="radio" name="funniest" value="1" /> 1. Lunch is on me.</label>
+        <label><input type="radio" name="funniest" value="2" /> 2. Dinner's on ME.</label>
+        <label><input type="radio" name="funniest" value="3" /> 3. Frankly, I'm more impressed by his balance than worried about lunch.</label>
+        <label><input type="radio" name="funniest" value="4" /> 4. Hey, who said there weren't plenty of fish in the sea?</label>
+        <label><input type="radio" name="funniest" value="5" /> 5. He’s telling his friends it’s not deep. So be patient.</label>
+      </form>
+      <div class="feedback" id="quizFeedback"></div>
+    </div>
+  </section>
+
+  <section id="section2">
+    <p>Every week, thousands of people submit captions. Some aim for absurdity. Others for dry wit. Only a few get people to laugh out loud. But what do the winners have in common—and can we use math to measure it?</p>
+    <p>To find out, we analyzed a dataset of <strong>2.3 million captions</strong>, created by researchers at <a href="https://nextml.github.io/caption-contest-data/" target="_blank">NextML</a>. Each human-written caption was rated by real readers on a scale from 1 (unfunny) to 3 (funny). We then asked two AI models to generate their own captions for the same cartoon. Could machines understand humor?</p>
+    <p>This story explores the patterns, personalities, and punchlines that emerged—from both humans and machines.</p>
+    <p class="part-intro">Part 1: The Humans – What makes a caption funny?</p>
+    <p class="part-intro">Part 2: The AI Models – Can bots be witty?</p>
+    <p class="part-intro">Part 3: The Comparison – Can AI be as funny as humans?</p>
+    <p class="part-intro">Part 4: The Gallery – All the cartoons and their best captions</p>
+  </section>
+
+  <div class="nav-buttons">
+    <button onclick="navigate(-1)">Previous</button>
+    <button onclick="navigate(1)">Next</button>
+  </div>
+
+  <script>
+    const sections = document.querySelectorAll("section");
+    let currentSection = 0;
+
+    function showSection(index) {
+      sections.forEach((section, i) => {
+        section.classList.toggle("active", i === index);
+      });
+    }
+
+    function navigate(direction) {
+      currentSection = Math.max(0, Math.min(sections.length - 1, currentSection + direction));
+      showSection(currentSection);
+    }
+
+    showSection(currentSection);
+
+    document.querySelectorAll('input[name="funniest"]').forEach(input => {
+      input.addEventListener('change', function () {
+        const feedback = document.getElementById('quizFeedback');
+        switch (this.value) {
+          case "1":
+            feedback.innerText = "This caption was Top choice by voters and written by a human. It has 15232 funny votes out of 25200 votes. Good choice!";
+            break;
+          case "2":
+            feedback.innerText = "This caption was in the Top 3 funniest caption by voters and written by a human. It has 8565 funny votes out of 19463 votes. Good choice!";
+            break;
+          case "3":
+            feedback.innerText = "This caption was the best attempt by ChatGPT, an AI model by OpenAI. Good choice!";
+            break;
+          case "4":
+            feedback.innerText = "This caption was the best attempt by Claude, an AI model by Anthropic. Good choice!";
+            break;
+          case "5":
+            feedback.innerText = "This caption was in the Top 3 funniest caption by voters and written by a human. It has 7735 funny votes out of 19271 votes. Good choice!";
+            break;
+        }
+        feedback.style.display = 'block';
+      });
+    });
+  </script>
+</body>
+</html>
