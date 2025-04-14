@@ -5,14 +5,162 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The New Yorker Caption Contest: Human vs. AI</title>
   
-  <!-- Google fonts -->
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
-  
   <style>
-    /* Override the button styles to be black outline and white background */
+    /* Base styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body { 
+      margin: 0; 
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background: white; 
+      overflow-x: hidden;
+      font-size: 18px;
+      text-rendering: optimizeLegibility;
+      line-height: 1.6;
+      color: #333;
+    }
+    
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100vh;
+    }
+    
+    h1, h2, h3 {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      line-height: 1.3;
+      margin-bottom: 0.8em;
+      font-weight: 700;
+    }
+    
+    h1 {
+      font-size: 2.2em;
+      line-height: 1.1;
+    }
+    
+    h2 {
+      font-size: 1.5em;
+      margin-top: 1.5em;
+    }
+    
+    p {
+      margin-bottom: 1em;
+    }
+    
+    /* Layout */
+    .scroll-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding-bottom: 50px;
+      min-height: 100vh;
+    }
+    
+    section {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2em 1em;
+      text-align: left;
+      box-sizing: border-box;
+      position: relative;
+      margin-bottom: 0;
+    }
+    
+    section.active {
+      display: flex;
+    }
+    
+    section:not(.active) {
+      display: none;
+    }
+    
+    .text-block {
+      background: rgba(255,255,255,0.92);
+      padding: 2.5em;
+      border-radius: 8px;
+      max-width: 750px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+      z-index: 3;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    
+    /* Image */
+    .cartoon-container {
+      margin: 1.5em 0;
+      text-align: center;
+    }
+    
+    .cartoon-img {
+      max-width: 100%;
+      height: auto;
+      max-height: 450px;
+      object-fit: contain;
+      border: 1px solid #eee;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    /* Quiz */
+    .quiz {
+      margin-top: 2em;
+    }
+    
+    .quiz h2 {
+      margin-bottom: 1em;
+    }
+    
+    .quiz label {
+      display: block;
+      margin: 0.7em 0;
+      cursor: pointer;
+      background-color: #f6f6f6;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0.75rem 1rem;
+      transition: all 0.2s ease-in-out;
+    }
+    
+    .quiz label:hover {
+      background-color: #eaeaea;
+    }
+    
+    .quiz input[type="radio"] {
+      margin-right: 10px;
+    }
+    
+    .quiz input[type="radio"]:checked + span {
+      font-weight: bold;
+      color: #f05349;
+    }
+    
+    .feedback {
+      margin-top: 1.5rem;
+      padding: 1rem;
+      background-color: #e0f7ec;
+      border-left: 4px solid #00b38f;
+      border-radius: 6px;
+      display: none;
+      font-size: 0.95em;
+    }
+    
+    /* Navigation */
+    .nav-buttons {
+      text-align: center;
+      margin: 2rem;
+      position: relative;
+      z-index: 5;
+    }
+    
     .nav-buttons button {
       padding: 0.75rem 1.5rem;
       margin: 0 0.5rem;
@@ -23,10 +171,61 @@
       border-radius: 4px;
       cursor: pointer;
       transition: all 0.2s ease;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
     
     .nav-buttons button:hover {
       background: #f6f6f6;
+    }
+    
+    /* Links */
+    .part-intro {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.7rem;
+    }
+    
+    a {
+      color: #f05349;
+      text-decoration: none;
+    }
+    
+    a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Responsive */
+    @media (max-width: 800px) {
+      .text-block {
+        padding: 1.8em;
+      }
+      
+      h1 {
+        font-size: 1.8em;
+      }
+      
+      h2 {
+        font-size: 1.3em;
+      }
+      
+      body {
+        font-size: 16px;
+      }
+    }
+    
+    @media (max-width: 500px) {
+      .text-block {
+        padding: 1.5em;
+      }
+      
+      section {
+        padding: 1em;
+      }
+      
+      h1 {
+        font-size: 1.6em;
+      }
     }
   </style>
 </head>
@@ -38,7 +237,10 @@
       <div class="text-block">
         <h1>The New Yorker Caption Contest</h1>
         <p>The New Yorker Caption Contest is a long-running tradition. Each week, a cartoon is presented and readers submit their funniest captions. It's a battle of wits, and the winner gets their caption published in the magazine.</p>
-        <img class="cartoon-img" src="665_Dashboard.jpg" alt="New Yorker Cartoon Contest 665">
+        
+        <div class="cartoon-container">
+          <img class="cartoon-img" src="665_Dashboard.jpg" alt="New Yorker Cartoon Contest 665">
+        </div>
 
         <div class="quiz">
           <h2>Quiz: Which caption do you think is the funniest?</h2>
@@ -71,12 +273,16 @@
 
     <section id="section2">
       <div class="text-block">
+        <h1>Caption Analysis</h1>
         <p>Every week, thousands of people submit captions. Some aim for absurdity. Others for dry wit. Only a few get people to laugh out loud. But what do the winners have in common—and can we use math to measure it?</p>
         <p>To find out, we analyzed a dataset of <strong>2.3 million captions</strong>, created by researchers at <a href="https://nextml.github.io/caption-contest-data/" target="_blank">NextML</a>. Each human-written caption was rated by real readers on a scale from 1 (unfunny) to 3 (funny). We then asked two AI models to generate their own captions for the same cartoon. Could machines understand humor?</p>
         <p>This story explores the patterns, personalities, and punchlines that emerged—from both humans and machines.</p>
-        <p class="part-intro"> <a href="https://chilinhhovo.github.io/567_contest">Part 1: The Humans – What makes a caption funny?</a> </p>
-        <p class="part-intro"><a href="https://chilinhhovo.github.io/cartoon/">Part 2: The Gallery – All the cartoons and their best captions</a></p>
-        <p class="part-intro"><a href="https://github.com/chilinhhovo/intro-page/">Github repo</a></p>
+        
+        <div class="links-section">
+          <p class="part-intro"><a href="https://chilinhhovo.github.io/567_contest">Part 1: The Humans – What makes a caption funny?</a></p>
+          <p class="part-intro"><a href="https://chilinhhovo.github.io/cartoon/">Part 2: The Gallery – All the cartoons and their best captions</a></p>
+          <p class="part-intro"><a href="https://github.com/chilinhhovo/intro-page/">Github repo</a></p>
+        </div>
       </div>
     </section>
   </div>
