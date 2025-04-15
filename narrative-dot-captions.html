@@ -1,0 +1,110 @@
+<script>
+  /*************
+  This is the JavaScript that makes the scrolly work 
+  *************/
+
+  /* 
+  This part attaches a scroll to the element with id="scrolly-images"    
+  */
+  (() => {
+    const scroller = scrollama();
+
+    scroller
+      .setup({
+        parent: document.querySelector("#scrolly-images"),
+        step: ".step",
+        offset: 0.5,
+        debug: false,
+      })
+      .onStepEnter(({ element, index, direction }) => {
+        // Add active class to current step
+        element.classList.add('active');
+        
+        // Update image based on step
+        const container = element.closest(".scrolly-container");
+        const img = container.querySelector(".sticky-thing img");
+        
+        switch(index) {
+          case 0:
+            img.src = "image1.jpg";
+            break;
+          case 1:
+            img.src = "image2.jpg";
+            break;
+          case 2:
+            img.src = "image3.jpg";
+            break;
+        }
+      })
+      .onStepExit(({ element, index, direction }) => {
+        // Remove active class when leaving step
+        element.classList.remove('active');
+        
+        // If scrolling up, activate previous step
+        if (direction === "up" && element.previousElementSibling) {
+          element.previousElementSibling.classList.add('active');
+        }
+      });
+
+    // Handle window resize
+    window.addEventListener("resize", scroller.resize);
+  })();
+</script>
+
+<style>
+  /* Scrolly section styles */
+  .scrolly-container {
+    position: relative;
+    width: 100%;
+    margin: 2rem 0;
+    min-height: 100vh;
+  }
+
+  .sticky-thing {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    z-index: 1;
+  }
+
+  .sticky-thing img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+  }
+
+  .steps-container {
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  .step {
+    margin: 0 auto 100vh;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .step.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .step p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }
+</style> 
