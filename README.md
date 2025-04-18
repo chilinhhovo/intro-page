@@ -1,5 +1,5 @@
 # How I Mapped Humor: A Methodology for Human and AI Captions
-[Story](https://chilinhhovo.github.io/intro-page/)
+[Story here](https://chilinhhovo.github.io/intro-page/)
 ## I. Introduction
 
 What makes a cartoon caption funny? Is it sarcasm, surprise, or just something totally absurd?  
